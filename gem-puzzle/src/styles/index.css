@@ -47,3 +47,9 @@
 .frame {
   outline: 1px solid gray;
 }
+
+.other-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
