@@ -7,6 +7,7 @@ import frameSize from './FrameSize';
 import otherSizes from './OtherSizes';
 
 const container = new Element('container').root;
-container.append(buttonsContainer, gameInfo, game, frameSize, otherSizes);
+
+container.append(buttonsContainer, gameInfo, game.root, frameSize, otherSizes);
 
 export default container;

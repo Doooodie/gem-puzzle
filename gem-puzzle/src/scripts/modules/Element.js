@@ -1,8 +1,8 @@
 export default class Element {
-  constructor(className, innerHTML = '', element = 'div', href = '') {
+  constructor(className, text = '', element = 'div', href = '') {
     this.root = document.createElement(element);
     this.root.classList.add(className);
-    this.root.innerHTML = innerHTML;
+    this.root.textContent = text;
     this.root.href = href;
   }
 }

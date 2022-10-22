@@ -1,4 +1,6 @@
 import Element from './Element';
+import moves from './Moves';
+import timer from './Timer';
 
 const gameInfo = new Element('game-info').root;
 
@@ -7,23 +9,8 @@ const containers = [
   new Element('time-container').root,
 ];
 
-const [movesStatic, movesDynamic] = [
-  new Element('static-info', 'Moves: ', 'span').root,
-  new Element('dynamic-info', '5', 'span').root,
-];
-
-const [timeStatic, timeDynamic] = [
-  new Element('static-info', 'Time: ', 'span').root,
-  new Element('dynamic-info', '10:56', 'span').root,
-];
-
-containers.forEach((container) => {
-  if (container.classList.contains('moves-container')) {
-    container.append(movesStatic, movesDynamic);
-  } else {
-    container.append(timeStatic, timeDynamic);
-  }
-});
+containers[0].append(moves.root);
+containers[1].append(timer.root);
 
 gameInfo.append(...containers);
 
