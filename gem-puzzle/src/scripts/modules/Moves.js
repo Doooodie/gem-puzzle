@@ -7,12 +7,18 @@ class Moves extends Element {
     this.root.textContent = `Moves: ${this.movesCount}`;
   }
 
+  updateText() {
+    this.root.textContent = `Moves: ${this.movesCount}`;
+  }
+
   resetMoves() {
     this.movesCount = 0;
+    this.updateText();
   }
 
   countMove() {
     this.movesCount += 1;
+    this.updateText();
   }
 }
 
