@@ -1,4 +1,4 @@
-import Element from './Element';
+import Element from '../../Element';
 import moves from './Moves';
 import timer from './Timer';
 

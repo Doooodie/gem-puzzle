@@ -1,4 +1,4 @@
-import Element from './Element';
+import Element from '../../Element';
 
 class Moves extends Element {
   constructor(...args) {

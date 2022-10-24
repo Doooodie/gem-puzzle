@@ -27,6 +27,10 @@ const config = {
           },
         },
       },
+      {
+        test: /\.mp3$/,
+        type: 'asset/resource',
+      },
     ],
   },
   optimization: {

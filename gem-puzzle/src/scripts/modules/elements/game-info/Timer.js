@@ -1,4 +1,4 @@
-import Element from './Element';
+import Element from '../../Element';
 
 class Timer extends Element {
   constructor(...args) {
@@ -10,23 +10,33 @@ class Timer extends Element {
   }
 
   startTimer() {
-    clearInterval(this.interval);
-    this.minutes = '0';
-    this.seconds = '00';
+    this.resetTimer();
 
     const startTime = new Date().getTime();
 
     const count = () => {
       const difference = (new Date().getTime() - startTime) / 1000;
-      let seconds = parseInt(difference % 60, 10);
-      const minutes = parseInt((difference / 60) % 60, 10);
-      if (seconds < 10) {
-        seconds = `0${seconds}`;
+      this.seconds = parseInt(difference % 60, 10);
+      this.minutes = parseInt((difference / 60) % 60, 10);
+
+      if (this.seconds < 10) {
+        this.seconds = `0${this.seconds}`;
       }
-      this.root.textContent = `Time: ${minutes}:${seconds}`;
+
+      this.root.textContent = `Time: ${this.minutes}:${this.seconds}`;
     };
 
     this.interval = setInterval(count, 1000);
+  }
+
+  stopTimer() {
+    clearInterval(this.interval);
+  }
+
+  resetTimer() {
+    this.stopTimer();
+    this.minutes = '0';
+    this.seconds = '00';
   }
 }
 

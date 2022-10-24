@@ -1,6 +1,8 @@
-import Element from './Element';
-import moves from './Moves';
-import timer from './Timer';
+import Element from '../Element';
+import moves from './game-info/Moves';
+import timer from './game-info/Timer';
+import { soundSwitcher } from './Sound';
+import Overlay from './Overlay';
 
 class Game extends Element {
   constructor(fieldSize = 9, ...args) {
@@ -32,6 +34,18 @@ class Game extends Element {
     this.generateField();
   }
 
+  stopGame() {
+    timer.stopTimer();
+    this.disableCells();
+    this.saveResult();
+
+    const overlay = new Overlay(
+      `Hooray! You solved the puzzle in ${timer.minutes}:${timer.seconds} and ${moves.movesCount} moves!`,
+      'overlay',
+    );
+    overlay.open();
+  }
+
   generateField() {
     this.root.innerHTML = null;
 
@@ -50,7 +64,36 @@ class Game extends Element {
       }
     }
 
+    if (!this.hasSolution(shuffledNumbers)) this.generateField();
     this.makeCellsActive();
+
+    this.checkForWin();
+    if (this.winState) this.stopGame();
+  }
+
+  hasSolution(numbers) {
+    const cleanNums = numbers.filter((x) => x !== this.fieldSize);
+    const rowSize = Math.sqrt(this.fieldSize);
+    const emptyRow = this.returnEmptyCell()[0];
+
+    let invertions = 0;
+    let result;
+
+    for (let i = 0; i < this.fieldSize; i += 1) {
+      for (let k = i + 1; k < this.fieldSize; k += 1) {
+        if (cleanNums[k] < cleanNums[i]) {
+          invertions += 1;
+        }
+      }
+    }
+
+    if (rowSize % 2 !== 0) {
+      result = invertions % 2 === 0;
+    } else {
+      result = (invertions % 2) + emptyRow !== 0;
+    }
+
+    return result;
   }
 
   refreshField() {
@@ -63,6 +106,9 @@ class Game extends Element {
     }
 
     this.makeCellsActive();
+
+    this.checkForWin();
+    if (this.winState) this.stopGame();
   }
 
   makeCellsActive() {
@@ -96,15 +142,13 @@ class Game extends Element {
     const event = e;
     event.target.style.transform = `translateY(${this.cellWidth})`;
 
+    soundSwitcher.playSound();
     moves.countMove();
     this.disableCells();
 
     setTimeout(() => {
       this.field[this.emptyCellIndex[0] - 1][this.emptyCellIndex[1]] = new Element('cell');
-      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element(
-        'cell',
-        `${event.target.textContent}`,
-      );
+      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element('cell', `${event.target.textContent}`);
 
       this.refreshField();
     }, 500);
@@ -116,15 +160,13 @@ class Game extends Element {
     const event = e;
     event.target.style.transform = `translateX(-${this.cellWidth})`;
 
+    soundSwitcher.playSound();
     moves.countMove();
     this.disableCells();
 
     setTimeout(() => {
       this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1] + 1] = new Element('cell');
-      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element(
-        'cell',
-        `${event.target.textContent}`,
-      );
+      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element('cell', `${event.target.textContent}`);
 
       this.refreshField();
     }, 500);
@@ -136,15 +178,13 @@ class Game extends Element {
     const event = e;
     event.target.style.transform = `translateY(-${this.cellWidth})`;
 
+    soundSwitcher.playSound();
     moves.countMove();
     this.disableCells();
 
     setTimeout(() => {
       this.field[this.emptyCellIndex[0] + 1][this.emptyCellIndex[1]] = new Element('cell');
-      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element(
-        'cell',
-        `${event.target.textContent}`,
-      );
+      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element('cell', `${event.target.textContent}`);
 
       this.refreshField();
     }, 500);
@@ -156,15 +196,13 @@ class Game extends Element {
     const event = e;
     event.target.style.transform = `translateX(${this.cellWidth})`;
 
+    soundSwitcher.playSound();
     moves.countMove();
     this.disableCells();
 
     setTimeout(() => {
       this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1] - 1] = new Element('cell');
-      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element(
-        'cell',
-        `${event.target.textContent}`,
-      );
+      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element('cell', `${event.target.textContent}`);
 
       this.refreshField();
     }, 500);
@@ -219,6 +257,44 @@ class Game extends Element {
     }
 
     return null;
+  }
+
+  checkForWin() {
+    const solution = this.range.filter((x) => x !== this.fieldSize);
+    const status = [];
+
+    for (let i = 0; i < this.field.length; i += 1) {
+      for (let k = 0; k < this.field[0].length; k += 1) {
+        if (this.field[i][k].root.textContent !== '') {
+          status.push(+this.field[i][k].root.textContent);
+        }
+      }
+    }
+
+    if (solution.every((v, i) => v === status[i])) {
+      this.winState = true;
+    } else {
+      this.winState = false;
+    }
+  }
+
+  saveResult() {
+    let storage = JSON.parse(localStorage.getItem('results'));
+
+    if (!storage) {
+      localStorage.setItem('results', JSON.stringify([]));
+      storage = JSON.parse(localStorage.getItem('results'));
+    }
+
+    const results = {
+      fieldSize: `${this.fieldSize ** 0.5}x${this.fieldSize ** 0.5}`,
+      time: `${timer.minutes}:${timer.seconds}`,
+      moves: moves.movesCount,
+    };
+
+    if (storage.length < 10) {
+      localStorage.setItem('results', JSON.stringify([...storage, results]));
+    }
   }
 
   shuffle() {

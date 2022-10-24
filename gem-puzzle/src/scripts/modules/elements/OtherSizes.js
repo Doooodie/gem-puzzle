@@ -1,4 +1,4 @@
-import Element from './Element';
+import Element from '../Element';
 
 const otherSizes = new Element('other-sizes').root;
 const otherSizesText = new Element('other-sizes-text', 'Other sizes:', 'span')
