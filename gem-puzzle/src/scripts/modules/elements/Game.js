@@ -312,14 +312,15 @@ class Game extends Element {
   }
 
   checkForWin() {
-    const solution = this.range.filter((x) => x !== this.fieldSize);
     const status = [];
+    const solution = this.range.map((item) => {
+      if (item === this.fieldSize) return '';
+      return `${item}`;
+    });
 
     for (let i = 0; i < this.field.length; i += 1) {
       for (let k = 0; k < this.field[0].length; k += 1) {
-        if (this.field[i][k].root.textContent !== '') {
-          status.push(+this.field[i][k].root.textContent);
-        }
+        status.push(this.field[i][k].root.textContent);
       }
     }
 
