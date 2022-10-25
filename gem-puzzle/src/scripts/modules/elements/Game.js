@@ -3,6 +3,7 @@ import moves from './game-info/Moves';
 import timer from './game-info/Timer';
 import { soundSwitcher } from './Sound';
 import Overlay from './Overlay';
+import saveButton from './buttons/SaveButton';
 
 class Game extends Element {
   constructor(fieldSize = 9, ...args) {
@@ -12,6 +13,7 @@ class Game extends Element {
 
     this.fieldSize = fieldSize;
 
+    this.savedRange = null;
     this.range = Array.from(Array(this.fieldSize).keys(), (n) => n + 1);
     this.field = Array(Math.sqrt(this.fieldSize))
       .fill(null)
@@ -29,15 +31,47 @@ class Game extends Element {
   }
 
   startGame() {
-    moves.resetMoves();
-    timer.startTimer();
-    this.generateField();
+    const save = JSON.parse(localStorage.getItem('savedGame'));
+
+    if (!save) {
+      moves.resetMoves();
+      timer.startTimer();
+      this.generateField();
+    } else {
+      const request = confirm('Saved game detected! Do you want to load game?');
+
+      if (request) {
+        timer.startTime = save.startTime;
+        timer.nowTime = save.nowTime;
+        timer.minutes = save.minutes;
+        timer.seconds = save.seconds;
+        timer.continueTimer();
+
+        moves.movesCount = save.moves;
+        moves.updateText();
+
+        soundSwitcher.root.checked = save.soundStatus;
+
+        this.fieldSize = save.fieldSize;
+        this.field = save.field;
+        this.savedRange = save.range;
+
+        this.loadField();
+      } else {
+        moves.resetMoves();
+        timer.startTimer();
+        this.generateField();
+      }
+    }
+
+    saveButton.enable();
   }
 
   stopGame() {
     timer.stopTimer();
     this.disableCells();
     this.saveResult();
+    saveButton.disable();
 
     const overlay = new Overlay(
       `Hooray! You solved the puzzle in ${timer.minutes}:${timer.seconds} and ${moves.movesCount} moves!`,
@@ -65,6 +99,24 @@ class Game extends Element {
     }
 
     if (!this.hasSolution(shuffledNumbers)) this.generateField();
+    this.makeCellsActive();
+
+    this.checkForWin();
+    if (this.winState) this.stopGame();
+  }
+
+  loadField() {
+    this.root.innerHTML = null;
+
+    let index = 0;
+    for (let i = 0; i < this.field.length; i += 1) {
+      for (let k = 0; k < this.field[0].length; k += 1) {
+        this.field[i][k] = new Element('cell', this.savedRange[index]);
+        this.root.append(this.field[i][k].root);
+        index += 1;
+      }
+    }
+
     this.makeCellsActive();
 
     this.checkForWin();
@@ -296,6 +348,30 @@ class Game extends Element {
       localStorage.setItem('results', JSON.stringify([...storage, results]));
     }
   }
+
+  saveGame = () => {
+    const savedRange = [];
+
+    for (let i = 0; i < this.field.length; i += 1) {
+      for (let k = 0; k < this.field[0].length; k += 1) {
+        savedRange.push(this.field[i][k].root.textContent);
+      }
+    }
+
+    const gameState = {
+      minutes: timer.minutes,
+      seconds: timer.seconds,
+      startTime: timer.startTime,
+      nowTime: timer.nowTime,
+      moves: moves.movesCount,
+      range: savedRange,
+      field: this.field,
+      fieldSize: this.fieldSize,
+      soundStatus: soundSwitcher.root.checked,
+    };
+
+    localStorage.setItem('savedGame', JSON.stringify(gameState));
+  };
 
   shuffle() {
     const array = Array.from(this.range);

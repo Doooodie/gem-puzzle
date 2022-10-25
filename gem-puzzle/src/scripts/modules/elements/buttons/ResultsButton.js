@@ -15,16 +15,20 @@ class ResultsButton extends Element {
     const overlay = new Overlay(this.container.root, 'overlay');
     const results = JSON.parse(localStorage.getItem('results'));
 
-    results.forEach((result, i) => {
-      const container = new Element('result-container');
-      const place = new Element('result-place', `${i + 1}.`, 'span');
-      const fieldSize = new Element('result-size', `field size: ${result.fieldSize}`, 'span');
-      const time = new Element('result-time', `time: ${result.time}`, 'span');
-      const moves = new Element('result-moves', `moves: ${result.moves}`, 'span');
+    if (results) {
+      results.forEach((result, i) => {
+        const container = new Element('result-container');
+        const place = new Element('result-place', `${i + 1}.`, 'span');
+        const fieldSize = new Element('result-size', `field size: ${result.fieldSize}`, 'span');
+        const time = new Element('result-time', `time: ${result.time}`, 'span');
+        const moves = new Element('result-moves', `moves: ${result.moves}`, 'span');
 
-      container.root.append(place.root, fieldSize.root, time.root, moves.root);
-      this.container.root.append(container.root);
-    });
+        container.root.append(place.root, fieldSize.root, time.root, moves.root);
+        this.container.root.append(container.root);
+      });
+    } else {
+      this.container.root.textContent = 'No leaders! Solve the puzzle to become one.';
+    }
 
     overlay.open();
   };

@@ -16,12 +16,7 @@ class SoundSwitcher extends Element {
 
 const soundContainer = new Element('sound-container');
 const soundText = new Element('sound-text', 'Sound: ', 'span');
-const soundSwitcher = new SoundSwitcher(
-  'checkbox',
-  'sound-switcher',
-  '',
-  'input',
-);
+const soundSwitcher = new SoundSwitcher('checkbox', 'sound-switcher', '', 'input');
 
 soundContainer.root.append(soundText.root, soundSwitcher.root);
 

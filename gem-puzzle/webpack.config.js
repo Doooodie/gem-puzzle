@@ -30,6 +30,9 @@ const config = {
       {
         test: /\.mp3$/,
         type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]',
+        },
       },
     ],
   },
