@@ -4,10 +4,13 @@ import timer from './game-info/Timer';
 import { soundSwitcher } from './Sound';
 import Overlay from './Overlay';
 import saveButton from './buttons/SaveButton';
+import frameSize from './FrameSize';
 
 class Game extends Element {
   constructor(fieldSize = 9, ...args) {
     super(...args);
+
+    this.root.classList.add('game-container');
 
     this.winState = false;
 
@@ -20,6 +23,7 @@ class Game extends Element {
       .map(() => Array(Math.sqrt(this.fieldSize)).fill(0));
 
     this.cellWidth = '';
+    this.cellHeight = '';
 
     this.emptyCell = null;
     this.emptyCellIndex = null;
@@ -55,6 +59,8 @@ class Game extends Element {
         this.fieldSize = save.fieldSize;
         this.field = save.field;
         this.savedRange = save.range;
+        const rowSize = Math.sqrt(this.fieldSize);
+        this.root.className = `game-${rowSize}x${rowSize} game-container`;
 
         this.loadField();
       } else {
@@ -64,6 +70,7 @@ class Game extends Element {
       }
     }
 
+    frameSize.update(this.fieldSize);
     saveButton.enable();
   }
 
@@ -105,6 +112,24 @@ class Game extends Element {
     if (this.winState) this.stopGame();
   }
 
+  newSize(size) {
+    this.root.innerHTML = null;
+
+    timer.resetTimer();
+    moves.resetMoves();
+    saveButton.disable();
+
+    this.fieldSize = size * size;
+    this.range = Array.from(Array(this.fieldSize).keys(), (n) => n + 1);
+    this.field = Array(Math.sqrt(this.fieldSize))
+      .fill(null)
+      .map(() => Array(Math.sqrt(this.fieldSize)).fill(0));
+
+    this.root.className = `game-${size}x${size} game-container`;
+
+    frameSize.update(this.fieldSize);
+  }
+
   loadField() {
     this.root.innerHTML = null;
 
@@ -142,7 +167,7 @@ class Game extends Element {
     if (rowSize % 2 !== 0) {
       result = invertions % 2 === 0;
     } else {
-      result = (invertions % 2) + emptyRow !== 0;
+      result = (invertions + emptyRow) % 2 !== 0;
     }
 
     return result;
@@ -189,10 +214,10 @@ class Game extends Element {
   }
 
   moveBottom = (e) => {
-    this.cellWidth = getComputedStyle(this.emptyCell.root).width;
+    this.cellHeight = getComputedStyle(this.emptyCell.root).height;
 
     const event = e;
-    event.target.style.transform = `translateY(${this.cellWidth})`;
+    event.target.style.transform = `translateY(${this.cellHeight})`;
 
     soundSwitcher.playSound();
     moves.countMove();
@@ -200,7 +225,10 @@ class Game extends Element {
 
     setTimeout(() => {
       this.field[this.emptyCellIndex[0] - 1][this.emptyCellIndex[1]] = new Element('cell');
-      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element('cell', `${event.target.textContent}`);
+      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element(
+        'cell',
+        `${event.target.textContent}`,
+      );
 
       this.refreshField();
     }, 500);
@@ -218,17 +246,20 @@ class Game extends Element {
 
     setTimeout(() => {
       this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1] + 1] = new Element('cell');
-      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element('cell', `${event.target.textContent}`);
+      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element(
+        'cell',
+        `${event.target.textContent}`,
+      );
 
       this.refreshField();
     }, 500);
   };
 
   moveTop = (e) => {
-    this.cellWidth = getComputedStyle(this.emptyCell.root).width;
+    this.cellHeight = getComputedStyle(this.emptyCell.root).height;
 
     const event = e;
-    event.target.style.transform = `translateY(-${this.cellWidth})`;
+    event.target.style.transform = `translateY(-${this.cellHeight})`;
 
     soundSwitcher.playSound();
     moves.countMove();
@@ -236,7 +267,10 @@ class Game extends Element {
 
     setTimeout(() => {
       this.field[this.emptyCellIndex[0] + 1][this.emptyCellIndex[1]] = new Element('cell');
-      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element('cell', `${event.target.textContent}`);
+      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element(
+        'cell',
+        `${event.target.textContent}`,
+      );
 
       this.refreshField();
     }, 500);
@@ -254,7 +288,10 @@ class Game extends Element {
 
     setTimeout(() => {
       this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1] - 1] = new Element('cell');
-      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element('cell', `${event.target.textContent}`);
+      this.field[this.emptyCellIndex[0]][this.emptyCellIndex[1]] = new Element(
+        'cell',
+        `${event.target.textContent}`,
+      );
 
       this.refreshField();
     }, 500);
@@ -388,6 +425,6 @@ class Game extends Element {
   }
 }
 
-const game = new Game(9, 'game-container');
+const game = new Game(9, 'game-3x3');
 
 export default game;

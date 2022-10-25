@@ -66,8 +66,31 @@
 .game-container {
   align-self: stretch;
   display: grid;
-  grid-template: repeat(3, 10vw) / repeat(3, 1fr);
   outline: 1px solid gray;
+}
+
+.game-3x3 {
+  grid-template: repeat(3, 10vw) / repeat(3, 1fr);
+}
+
+.game-4x4 {
+  grid-template: repeat(4, 8vw) / repeat(4, 1fr);
+}
+
+.game-5x5 {
+  grid-template: repeat(5, 6vw) / repeat(5, 1fr);
+}
+
+.game-6x6 {
+  grid-template: repeat(6, 5vw) / repeat(6, 1fr);
+}
+
+.game-7x7 {
+  grid-template: repeat(7, 5vw) / repeat(7, 1fr);
+}
+
+.game-8x8 {
+  grid-template: repeat(8, 4vw) / repeat(8, 1fr);
 }
 
 .cell {

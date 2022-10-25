@@ -9,6 +9,13 @@ import { soundContainer } from './elements/Sound';
 
 const container = new Element('container').root;
 
-container.append(buttonsContainer, gameInfo, game.root, frameSize, otherSizes, soundContainer.root);
+container.append(
+  buttonsContainer,
+  gameInfo,
+  game.root,
+  frameSize.root,
+  otherSizes.root,
+  soundContainer.root,
+);
 
 export default container;
