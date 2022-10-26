@@ -64,6 +64,8 @@ class Game extends Element {
 
         this.loadField();
       } else {
+        this.range = Array.from(Array(this.fieldSize).keys(), (n) => n + 1);
+
         moves.resetMoves();
         timer.startTimer();
         this.generateField();
