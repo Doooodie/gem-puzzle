@@ -1,7 +1,7 @@
 import Element from './Element';
 
 import buttonsContainer from './elements/buttons/buttonsContainer';
-import gameInfo from './elements/game-info/gameInfo';
+import gameInfo from './elements/game-info/GameInfo';
 import game from './elements/Game';
 import frameSize from './elements/FrameSize';
 import otherSizes from './elements/OtherSizes';
