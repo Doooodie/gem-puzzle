@@ -67,22 +67,22 @@ Recommended usage of [eslint (eslint-config-airbnb-base)](https://eslint.org/), 
 
 ### Basic scope +30
 
-- [ ] layout, design, responsive UI: `+10`
-- [ ] at the beginning state of the game, the frame is filled with randomly generated and shuffled numbers: `+10`
-- [ ] on click on a tile next to an empty cell, the tile moves to the empty cell: `+10`
+- [x] layout, design, responsive UI: `+10`
+- [x] at the beginning state of the game, the frame is filled with randomly generated and shuffled numbers: `+10`
+- [x] on click on a tile next to an empty cell, the tile moves to the empty cell: `+10`
 
 ### Advanced scope +50
 
-- [ ] the game can be restarted without reloading the page: `+10`
-- [ ] game duration and number of moves are displayed: `+10`
-- [ ] sound accompaniment (on/off) of tiles movement: `+10`
-- [ ] implemented saving the state of the game and saving the top 10 results using LocalStorage: `+10`
-- [ ] implemented selection of different sizes for frame(from 3x3 to 8x8): `+10`
+- [x] the game can be restarted without reloading the page: `+10`
+- [x] game duration and number of moves are displayed: `+10`
+- [x] sound accompaniment (on/off) of tiles movement: `+10`
+- [x] implemented saving the state of the game and saving the top 10 results using LocalStorage: `+10`
+- [x] implemented selection of different sizes for frame(from 3x3 to 8x8): `+10`
 
 ### Hacker scope +40
 
-- [ ] when the game is finished, the following message is displayed "Hooray! You solved the puzzle in ##:## and N moves!". So that shuffled algorithm should work correctly - user can solve puzzle `+10`
-- [ ] animation of tiles' movement on frame: `+15`
+- [x] when the game is finished, the following message is displayed "Hooray! You solved the puzzle in ##:## and N moves!". So that shuffled algorithm should work correctly - user can solve puzzle `+10`
+- [x] animation of tiles' movement on frame: `+15`
 - [ ] tiles can be dragged with use of mouse: `+15`
 
 ## Useful links
